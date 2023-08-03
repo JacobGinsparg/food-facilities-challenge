@@ -1,6 +1,7 @@
 import json
 from typing import Dict
 
+from geopy.distance import geodesic
 from pandas import DataFrame, read_csv
 
 
@@ -44,10 +45,16 @@ class Database:
         return self._query_partial_str(field_name="Address", value=street)
 
     def query_near(self, lat: float, long: float, allow_non_approved: bool):
+        origin_loc = (lat, long)
+        self._db["Distance"] = 0.0
+        for i, row in self._db.iterrows():
+            self._db.at[i, "Distance"] = geodesic(origin_loc, (row["Latitude"], row["Longitude"])).miles
         if allow_non_approved:
-            pass
+            queryset = self._db.nsmallest(5, "Distance")
         else:
-            pass
+            queryset = self._db.query("Status == 'APPROVED'").nsmallest(5, "Distance")
+        self._db.drop("Distance", axis=1)
+        return json.loads(queryset.to_json(orient="records"))
 
 
 # Initialize db object
