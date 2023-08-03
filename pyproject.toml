@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "food-facilities-challenge"
+version = "0.1.0"
+description = ""
+authors = ["Jacob Ginsparg <jacobginsparg@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "food_facilities_challenge", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.100.1"
+uvicorn = {extras = ["standard"], version = "^0.23.2"}
+pandas = "^2.0.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
